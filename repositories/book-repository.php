@@ -20,8 +20,8 @@ $stmt->execute();
 $bookAuthors = $stmt->fetchAll();
 
 $bookByAuthors = [];
-foreach ($bookAuthors as $bookByAuthors) {
- $bookByAuthors[$bookAuthors['book_id']][] = $bookAuthors['name'];
+foreach ($bookAuthors as $author) {
+$bookByAuthors[$author['book_id']][] = $author['name'];
 }
 
 foreach ($books as $index => $book) {
