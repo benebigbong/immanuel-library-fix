@@ -23,3 +23,14 @@ function getCategory()
 
   return $category;
 }
+function isCategoryExist($categoryId)
+{
+  global $pdo;
+  $query = "select count(id) from categories where id = :category_id ";
+  $stmt = $pdo->prepare($query);
+  $stmt->execute([
+    "category_id" => $categoryId  
+    ]);
+    $isCategoryExist = $stmt->fetchColumn() > 0;
+    return $isCategoryExist;
+}
