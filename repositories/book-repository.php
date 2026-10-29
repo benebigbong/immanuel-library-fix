@@ -1,13 +1,22 @@
 <?php
 require_once __DIR__ ."/../config/database.php";
-function getBooks()
+function getBooks($search,$categoryId,$currentPage,$perPage)
 {
   global $pdo;
   $query ="select b.id, b.title, b.stock, c.name as category from books b
-  left join categories c on b.category_id = c.id
-  ";
+            left join categories c on b.category_id = c.id
+            where b.title like :search 
+            and (:category_filter = '' or b.category_id = :category_id)
+            limit :limit  offset :offset
+            ";
   $stmt = $pdo->prepare($query);
-  $stmt->execute();
+  $stmt->execute([
+    'search' => "%$search%",
+    'category_filter' => $categoryId,
+    "category_id"=> $categoryId,
+    'limit' =>$perPage,
+    'offset' => ($currentPage-1) * $perPage
+  ]);
 
   $books = $stmt->fetchAll();
   
@@ -69,4 +78,20 @@ function isISBN($isbn, $ignoreBookId){
     ]);
     $isISBNTaken = $stmt->fetchColumn() > 0;
     return $isISBNTaken;
+}
+function countOfBooks($search,$categoryId)
+{
+  global $pdo;
+  $query = "select count(id) from books
+            where title like :title and 
+            (:category_filter = '' or category_id = :category_id)
+  ";  
+  $stmt = $pdo->prepare($query);
+  $stmt->execute([ 
+    "title"=> "%$search%",
+    "category_filter"=> $categoryId,
+    "category_id"=> $categoryId.
+  ]) ;
+  $totalBooks = $stmt->fetchColumn();
+  return $totalBooks;
 }
