@@ -1,4 +1,11 @@
-<!DOCTYPE html>
+<?php
+session_start();
+$succes = $_SESSION['success'] ?? '';
+$errors = $_SESSION['errors']?? '';
+$old = $_SESSION['old']??'';
+unset($_SESSION['success'], $_SESSION['errors'], $_SESSION['old']);
+
+?><!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -16,17 +23,36 @@
       </div>
       <h1>Selamat Datang Kembali</h1>
       <p class="auth-subtitle">Masuk untuk mengelola koleksi buku perpustakaan.</p>
+ <?php if(isset($succes)): ?>
+  <p style="color: green; font-size: 12px; margin-bottom: 12px;">
+    <? $success ?>
+  </p>
+<?php endif; ?>
 
-      <form method="" action="">
+ <?php if(isset($errors)): ?>
+  <p style="color: red; font-size: 12px; margin-bottom: 12px;">
+    <? $errors['login'] ?>
+  </p>
+<?php endif; ?>
+
+      <form method="POST" action="../../action/auth/login.php">
         <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="nama@sekolah.sch.id">
+          <input value="<?= $old['email'] ?? '' ?>" type="email" id="email" name="email" placeholder="nama@sekolah.sch.id">
+            <?php if(isset($errors["email"])): ?>
+              <p style="font-size: 12px; margin_top: 4px; color: red;">
+              <?= $errors["email"]?>
+            <?php endif ?>
         </div>
         <div class="form-group">
           <label for="password">Kata Sandi</label>
           <input type="password" id="password" name="password" placeholder="Masukkan kata sandi">
+            <?php if(isset($errors["password"])): ?>
+              <p style="font-size: 12px; margin_top: 4px; color: red;">
+              <?= $errors["password"]?>
+            <?php endif ?>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Masuk</button>
+        <button name="login" type="submit" class="btn btn-primary btn-block">Masuk</button>
       </form>
 
       <p class="form-footer-link">
