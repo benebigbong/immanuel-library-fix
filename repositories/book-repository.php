@@ -90,7 +90,7 @@ function countOfBooks($search,$categoryId)
   $stmt->execute([ 
     "title"=> "%$search%",
     "category_filter"=> $categoryId,
-    "category_id"=> $categoryId.
+    "category_id"=> $categoryId,
   ]) ;
   $totalBooks = $stmt->fetchColumn();
   return $totalBooks;
